@@ -26,7 +26,12 @@ class Tweet {
     //returns a boolean, whether the text includes any content written by the person tweeting.
     get written():boolean {
         //TODO: identify whether the tweet is written
-        return false;
+        if (this.text.startsWith("just completed") || this.text.startsWith("just posted") || this.text.startsWith("achieved") || this.text.startsWith("watch my")){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     get writtenText():string {
