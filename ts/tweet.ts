@@ -89,8 +89,74 @@ class Tweet {
         if (this.source != 'completed_event') {
             return "unknown";
         }
+        
         //TODO: parse the activity type from the text of the tweet
-        return "";
+        let distanceIndex;
+        let distanceType;
+        
+        const lower = this.text.toLowerCase();
+        const kmIndex = lower.indexOf(" km ");
+        const miIndex = lower.indexOf(" mi ");
+        if (kmIndex === -1 && miIndex === -1){
+            return "unknown";
+        }
+        else if (kmIndex !== -1){
+            distanceIndex = kmIndex;
+            distanceType = "km";
+            const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+            let activity = afterDistance.split(" ")[0];
+            activity = activity.replace(/[.,!]/g, "");
+            if (activity.startsWith("run")) return "run";
+            if (activity.startsWith("walk")) return "walk";
+            if (activity.startsWith("bike") || activity.startsWith("cycl")) return "bike";
+            if (activity.startsWith("swim")) return "swim";
+            if (activity.startsWith("hike")) return "hike";
+
+        }
+        else if(miIndex !== -1) {
+            distanceIndex = miIndex;
+            distanceType = "mi";
+            const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+            let activity = afterDistance.split(" ")[0];
+            activity = activity.replace(/[.,!]/g, "");
+            if (activity.startsWith("run")) return "run";
+            if (activity.startsWith("walk")) return "walk";
+            if (activity.startsWith("bike") || activity.startsWith("cycl")) return "bike";
+            if (activity.startsWith("swim")) return "swim";
+            if (activity.startsWith("hike")) return "hike";
+        }
+
+        else {
+            if (miIndex !== -1){
+                distanceIndex = miIndex;
+                distanceType = "mi";
+                const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+                let checkNext = afterDistance.split(" ")[1];
+                checkNext = checkNext.replace(/[.,!]/g, "");
+                if (checkNext.startsWith("run")) return "run";
+                if (checkNext.startsWith("walk")) return "walk";
+                if (checkNext.startsWith("bike") || checkNext.startsWith("cycl")) return "bike";
+                if (checkNext.startsWith("swim")) return "swim";
+                if (checkNext.startsWith("hike")) return "hike";
+            }
+            if (kmIndex !== -1){
+                distanceIndex = kmIndex;
+                distanceType = "km";
+                const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+                let checkNext = afterDistance.split(" ")[1];
+                checkNext = checkNext.replace(/[.,!]/g, "");
+                if (checkNext.startsWith("run")) return "run";
+                if (checkNext.startsWith("walk")) return "walk";
+                if (checkNext.startsWith("bike") || checkNext.startsWith("cycl")) return "bike";
+                if (checkNext.startsWith("swim")) return "swim";
+                if (checkNext.startsWith("hike")) return "hike";
+            }
+        }
+        
+    return "unknown";    
+        
+
+        
     }
 
     get distance():number {
@@ -98,8 +164,27 @@ class Tweet {
             return 0;
         }
         //TODO: prase the distance from the text of the tweet
-        return 0;
+    let phrase_array;
+    const lower = this.text.toLowerCase();
+    const kmIndex = lower.indexOf("km");
+    const miIndex = lower.indexOf("mi");
+        if (kmIndex !== -1){
+        const beforeDistance = lower.substring(0, kmIndex).trim();
+        phrase_array = beforeDistance.split(" ");
+        console.log(lower);
+        let checkBefore = phrase_array[phrase_array.length -1];
+        return parseFloat(checkBefore);
     }
+    if (miIndex !== -1){
+        const beforeDistance = lower.substring(0, miIndex).trim();
+        phrase_array = beforeDistance.split(" ");
+        console.log(lower);
+        let checkBefore = phrase_array[phrase_array.length -1];
+        return parseFloat(checkBefore);
+    }
+    return 0;
+    }
+    
 
     getHTMLTableRow(rowNumber:number):string {
         //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
