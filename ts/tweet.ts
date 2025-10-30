@@ -172,7 +172,9 @@ class Tweet {
         const beforeDistance = lower.substring(0, kmIndex).trim();
         phrase_array = beforeDistance.split(" ");
         let checkBefore = phrase_array[phrase_array.length -1];
-        return parseFloat(checkBefore);
+        let distanceInMi = parseFloat(checkBefore)* 0.621;
+        distanceInMi = parseFloat(distanceInMi.toFixed(2));
+        return distanceInMi;
     }
     if (miIndex !== -1){
         const beforeDistance = lower.substring(0, miIndex).trim();
