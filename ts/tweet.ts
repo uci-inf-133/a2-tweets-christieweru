@@ -95,15 +95,15 @@ class Tweet {
         let distanceType;
         
         const lower = this.text.toLowerCase();
-        const kmIndex = lower.indexOf(" km ");
-        const miIndex = lower.indexOf(" mi ");
+        const kmIndex = lower.indexOf(" km");
+        const miIndex = lower.indexOf(" mi");
         if (kmIndex === -1 && miIndex === -1){
             return "unknown";
         }
         else if (kmIndex !== -1){
             distanceIndex = kmIndex;
             distanceType = "km";
-            const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+            const afterDistance = lower.substring(distanceIndex + distanceType.length + 1).trim();
             let activity = afterDistance.split(" ")[0];
             activity = activity.replace(/[.,!]/g, "");
             if (activity.startsWith("run")) return "run";
@@ -116,7 +116,7 @@ class Tweet {
         else if(miIndex !== -1) {
             distanceIndex = miIndex;
             distanceType = "mi";
-            const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+            const afterDistance = lower.substring(distanceIndex + distanceType.length + 1).trim();
             let activity = afterDistance.split(" ")[0];
             activity = activity.replace(/[.,!]/g, "");
             if (activity.startsWith("run")) return "run";
@@ -130,7 +130,7 @@ class Tweet {
             if (miIndex !== -1){
                 distanceIndex = miIndex;
                 distanceType = "mi";
-                const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+                const afterDistance = lower.substring(distanceIndex + distanceType.length + 1).trim();
                 let checkNext = afterDistance.split(" ")[1];
                 checkNext = checkNext.replace(/[.,!]/g, "");
                 if (checkNext.startsWith("run")) return "run";
@@ -142,7 +142,7 @@ class Tweet {
             if (kmIndex !== -1){
                 distanceIndex = kmIndex;
                 distanceType = "km";
-                const afterDistance = lower.substring(distanceIndex + distanceType.length).trim();
+                const afterDistance = lower.substring(distanceIndex + distanceType.length + 1).trim();
                 let checkNext = afterDistance.split(" ")[1];
                 checkNext = checkNext.replace(/[.,!]/g, "");
                 if (checkNext.startsWith("run")) return "run";
@@ -187,7 +187,26 @@ class Tweet {
     
 
     getHTMLTableRow(rowNumber:number):string {
-        //TODO: return a table row which summarizes the tweet with a clickable link to the RunKeeper activity
-        return "<tr></tr>";
+    const lower = this.text.toLowerCase();
+    let link = "";
+    const linkStart = lower.indexOf("https://t.co/");
+    if (linkStart !== -1) {
+        const afterLink = this.text.substring(linkStart).split(" ")[0];
+        link = afterLink.trim();
     }
+
+    const safeLink = link || "#";
+    const activity = this.activityType || "–";
+    const text = this.writtenText || "";
+
+    return `
+        <tr>
+            <td>${rowNumber}</td>
+            <td>${activity}</td>
+            <td>${text}</td>
+            <td><a href="${safeLink}" target="_blank">View</a></td>
+        </tr>
+    `;
 }
+}
+    
