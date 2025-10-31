@@ -48,6 +48,10 @@ function parseTweets(runkeeper_tweets) {
     document.getElementById("firstMost").innerText = "run";
     document.getElementById("secondMost").innerText = "bike";
     document.getElementById("thirdMost").innerText = "walk";
+	document.getElementById("longestActivityType").innerText = "run";
+	document.getElementById("shortestActivityType").innerText = "walk";
+	document.getElementById("weekdayOrWeekendLonger").innerText = "weekends";
+
 	activity_vis_spec = {
 	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 	  "description": "A graph of the number of Tweets containing each type of activity.",

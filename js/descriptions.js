@@ -42,10 +42,10 @@ function addEventHandlerForSearch() {
 		tableBody.innerHTML = "";
 
 		// append rows
-		filtered.forEach((tweet, index) => {
-			const row = tweet.getHTMLTableRow(index + 1);
-			tableBody.insertAdjacentHTML("beforeend", row);
-		});
+		tableBody.innerHTML = filtered
+			.map((tweet, i) => tweet.getHTMLTableRow(i + 1))
+			.join("");
+	
 	});
 }
 //Wait for the DOM to load
