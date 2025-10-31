@@ -36,7 +36,7 @@ function parseTweets(runkeeper_tweets) {
 		}
 	}
 
-
+	// activity count chart
 	const activityData = [
 		{activity: "run", count: run_count},
 		{activity: "walk", count: walk_count},
@@ -83,7 +83,7 @@ function parseTweets(runkeeper_tweets) {
 		}
 	}
 
-	// --- Chart #2: scatter plot of distances ---
+	// distance chart
 	const distanceScatterSpec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"data": { "values": distanceByDayData },
@@ -96,6 +96,48 @@ function parseTweets(runkeeper_tweets) {
 	};
 
 	vegaEmbed('#distanceVis', distanceScatterSpec, {actions:false});
+	// mean distance chart 
+	const meanDistanceData = [];
+	const grouped = {};
+
+	for (let entry of distanceByDayData) {
+		const key = entry.day + "-" + entry.activity;
+		if (!grouped[key]) grouped[key] = []; 
+		grouped[key].push(entry.distance); 
+	}
+
+	for (let key in grouped) {
+		const [day, activity] = key.split("-");
+		const distances = grouped[key];
+		const average = distances.reduce((a,b)=>a+b, 0) / distances.length;
+
+		meanDistanceData.push({ day, activity, meanDistance: average});
+	}
+	const meanChartSpec = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"data": { "values": meanDistanceData },
+		"mark": "point",
+		"encoding": {
+		"x": { "field": "day", "type": "nominal", "title": "Day of Week" },
+		"y": { "field": "meanDistance", "type": "quantitative", "title": "Avg Distance (mi)" },
+		"color": { "field": "activity", "type": "nominal", "title": "Activity" }
+		}
+	};
+
+	let showingMean = false;
+
+	document.getElementById("aggregate").onclick = function () {
+		showingMean = !showingMean;
+
+		if (showingMean) {
+			vegaEmbed('#distanceVis', meanChartSpec, {actions:false});
+			document.getElementById("aggregate").innerText = "Show all points";
+		} else {
+			vegaEmbed('#distanceVis', distanceScatterSpec, {actions:false});
+			document.getElementById("aggregate").innerText = "Show means";
+		}
+	};
+
 }
 
 
