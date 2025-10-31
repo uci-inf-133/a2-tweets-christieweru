@@ -10,6 +10,7 @@ function parseTweets(runkeeper_tweets) {
 	});
 
 	//TODO: create a new array or manipulate tweet_array to create a graph of the number of tweets containing each type of activity.
+	// graph one - activity types
 	let run_count = 0;
 	let walk_count = 0;
 	let bike_count = 0;
@@ -44,6 +45,7 @@ function parseTweets(runkeeper_tweets) {
 		{activity: "swim", count: swim_count},
 		{activity: "hike", count: hike_count}
 	];
+	// hardcoded values based on data
 	document.getElementById("numberActivities").innerText = 5;
     document.getElementById("firstMost").innerText = "run";
     document.getElementById("secondMost").innerText = "bike";
@@ -87,7 +89,7 @@ function parseTweets(runkeeper_tweets) {
 		}
 	}
 
-	// distance chart
+	// graph 2.1 distance chart
 	const distanceScatterSpec = {
 		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 		"data": { "values": distanceByDayData },
@@ -100,7 +102,7 @@ function parseTweets(runkeeper_tweets) {
 	};
 
 	vegaEmbed('#distanceVis', distanceScatterSpec, {actions:false});
-	// mean distance chart 
+	// graph 2.2 mean distance chart 
 	const meanDistanceData = [];
 	const grouped = {};
 

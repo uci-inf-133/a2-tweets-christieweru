@@ -34,14 +34,10 @@ function addEventHandlerForSearch() {
 		// filter written tweets based on user input
 		const filtered = writtenTweets.filter(t => t.writtenText.toLowerCase().includes(query));
 
-		// update count + text
 		searchCount.textContent = filtered.length;
 		searchText.textContent = query;
 
-		// clear old rows
 		tableBody.innerHTML = "";
-
-		// append rows
 		tableBody.innerHTML = filtered
 			.map((tweet, i) => tweet.getHTMLTableRow(i + 1))
 			.join("");

@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
 });
 
 function updateDates(runkeeper_tweets) {
+	//seperate dates from tweets
 	let time_stamps = []; 
 	for (let i = 0; i < runkeeper_tweets.length; i++) {
 			const tweet = runkeeper_tweets[i];
@@ -34,7 +35,7 @@ function updateDates(runkeeper_tweets) {
 	const max_date = Math.max(...time_stamps);
 	const earliest_date = new Date(min_date);
 	const latest_date = new Date(max_date);
-
+	// reformat dates 
 	const options = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
     const formattedEarliest = earliest_date.toLocaleDateString("en-US", options);
     const formattedLatest = latest_date.toLocaleDateString("en-US", options);
@@ -64,6 +65,7 @@ function tweetCategoryCounter(runkeeper_tweets){
 			miscellaneous_count += 1;
 		}
 	}
+	// insert number and percent values for each activity 
 	document.querySelectorAll(".completedEvents").forEach(el => { el.innerText = completed_count});
     document.querySelectorAll(".liveEvents").forEach(el => { el.innerText = live_count});
     document.querySelectorAll(".achievements").forEach(el => { el.innerText = achievement_count});
@@ -86,6 +88,7 @@ function writtenTweetCounter(runkeeper_tweets) {
 		if (tweet.written === true) {
 			written_ce += 1;
 		}
+		// insert number and percent values for user written activites 
 	document.querySelectorAll(".written").forEach(el => { el.innerText = written_ce});
 	document.querySelectorAll(".writtenPct").forEach(el => { el.innerText = parseFloat((written_ce/completed_count*100).toFixed(2)) +'%'});
 

@@ -3,6 +3,7 @@ class Tweet {
 	time:Date;
 
 	constructor(tweet_text:string, tweet_time:string) {
+        // store tweet text and convert timestamp string into a proper date 
         this.text = tweet_text;
 		this.time = new Date(tweet_time);//, "ddd MMM D HH:mm:ss Z YYYY"
 	}
@@ -37,17 +38,16 @@ class Tweet {
           return false;
         }
     
-
+    // extract only the user-written text from the tweet
     get writtenText():string {
     //TODO: parse the written text from the tweet
 
     if (!this.written) {
         return "";
     }
+    // handle case where written text comes after auto text
 
     const lower = this.text.toLowerCase();
-
-
     if (lower.includes(" - ")) {
         let afterDash = this.text.split(" - ")[1];
         afterDash = afterDash.split(" http")[0];
@@ -55,6 +55,7 @@ class Tweet {
 
         return afterDash.trim();
     }
+    // handle case where written text comes before default phrase
 
     const defaultPhrases = ["just completed", "just posted", "achieved", "watch my"];
     for (let phrase of defaultPhrases) {
@@ -63,7 +64,7 @@ class Tweet {
             return this.text.substring(0, idx).trim();
         }
     }
-
+    // fallback: after @RunKeeper
     const rkIndex = lower.indexOf("@runkeeper");
     if (rkIndex !== -1) {
         let after = this.text.substring(rkIndex + "@runkeeper".length);
@@ -77,7 +78,7 @@ class Tweet {
 
     }
     
-
+    // detect the type of activity for completed events
     get activityType():string {
         if (this.source != 'completed_event') {
             return "unknown";
@@ -93,6 +94,7 @@ class Tweet {
         if (kmIndex === -1 && miIndex === -1){
             return "unknown";
         }
+        // check if km 
         else if (kmIndex !== -1){
             distanceIndex = kmIndex;
             distanceType = "km";
@@ -106,6 +108,7 @@ class Tweet {
             if (activity.startsWith("hike")) return "hike";
 
         }
+        // check if mi
         else if(miIndex !== -1) {
             distanceIndex = miIndex;
             distanceType = "mi";
@@ -118,8 +121,9 @@ class Tweet {
             if (activity.startsWith("swim")) return "swim";
             if (activity.startsWith("hike")) return "hike";
         }
-
+        // check next 
         else {
+            // checks next index to find mi
             if (miIndex !== -1){
                 distanceIndex = miIndex;
                 distanceType = "mi";
@@ -132,6 +136,7 @@ class Tweet {
                 if (checkNext.startsWith("swim")) return "swim";
                 if (checkNext.startsWith("hike")) return "hike";
             }
+            // checks next indext to find km
             if (kmIndex !== -1){
                 distanceIndex = kmIndex;
                 distanceType = "km";
@@ -151,7 +156,7 @@ class Tweet {
 
         
     }
-
+    // extract numeric distance from tweet (convert km → miles if needed)
     get distance():number {
         if(this.source != 'completed_event') {
             return 0;
@@ -178,6 +183,7 @@ class Tweet {
     return 0;
     }
     
+    // generate a table row for the search results, including link + written text
 
     getHTMLTableRow(rowNumber:number):string {
     const lower = this.text.toLowerCase();
