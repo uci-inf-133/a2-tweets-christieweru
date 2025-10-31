@@ -44,6 +44,10 @@ function parseTweets(runkeeper_tweets) {
 		{activity: "swim", count: swim_count},
 		{activity: "hike", count: hike_count}
 	];
+	document.getElementById("numberActivities").innerText = 5;
+    document.getElementById("firstMost").innerText = "run";
+    document.getElementById("secondMost").innerText = "bike";
+    document.getElementById("thirdMost").innerText = "walk";
 	activity_vis_spec = {
 	  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
 	  "description": "A graph of the number of Tweets containing each type of activity.",
@@ -54,7 +58,8 @@ function parseTweets(runkeeper_tweets) {
 	"mark": "bar",
 	"encoding": {
 		"x": { "field": "activity", "type": "nominal", "axis": {"title": "Activity Type"} },
-		"y": { "field": "count", "type": "quantitative", "axis": {"title": "Tweet Count"} }
+		"y": { "field": "count", "type": "quantitative", "axis": {"title": "Tweet Count"} },
+		"color": { "field": "activity", "type": "nominal" }
 	}
 
 	};
@@ -62,56 +67,35 @@ function parseTweets(runkeeper_tweets) {
 
 	//TODO: create the visualizations which group the three most-tweeted activities by the day of the week.
 	//Use those visualizations to answer the questions about which activities tended to be longest and when.
-	const activityCountsByDay = {
-	run:  [0,0,0,0,0,0,0],
-	walk: [0,0,0,0,0,0,0],
-	bike: [0,0,0,0,0,0,0]
-	};
 	const dayOfWeek = ["Sun", "Mon", "Tues", "Wed", "Thu", "Fri", "Sat"];
+	const distanceByDayData = [];
 
-	for (let i = 0; i < tweet_array.length; i ++) {
+	for (let i = 0; i < tweet_array.length; i++) {
 		const tweet = tweet_array[i];
 		if (tweet.source === "completed_event") {
-			
-			const day = tweet.time.getDay()
+			const day = dayOfWeek[tweet.time.getDay()];
 			const type = tweet.activityType;
-			if (tweet.activityType === "run"){
-				activityCountsByDay.run[day]++;
+			const dist = tweet.distance;
+			
+			if ((type === "run" || type === "walk" || type === "bike") && dist > 0) {
+				distanceByDayData.push({ day: day, activity: type, distance: dist });
 			}
-			if (tweet.activityType === "walk"){
-				activityCountsByDay.walk[day]++;
-			}
-			if (tweet.activityType === "bike"){
-				activityCountsByDay.bike[day]++;
-			}
-
 		}
-
-			}
-	const popular_activity_data = [];
-	for (let i = 0; i < 7; i++) {
-		popular_activity_data.push({ activity: "run", day: dayOfWeek[i], count: activityCountsByDay.run[i] });
-		popular_activity_data.push({ activity: "walk", day: dayOfWeek[i], count: activityCountsByDay.walk[i] });
-		popular_activity_data.push({ activity: "bike", day: dayOfWeek[i], count: activityCountsByDay.bike[i] });
 	}
-		
-	
-	const activityByDaySpec = {
-	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-	"description": "Activity frequency by day of the week",
-	"data": { "values": popular_activity_data },
 
-	"mark": "point",
-
-	"encoding": {
-		"x": { "field": "day", "type": "nominal", "title": "Day of Week" },
-		"y": { "field": "count", "type": "quantitative", "title": "Tweet Count" },
-		"color": { "field": "activity", "type": "nominal", "title": "Activity Type" }
-	}
+	// --- Chart #2: scatter plot of distances ---
+	const distanceScatterSpec = {
+		"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+		"data": { "values": distanceByDayData },
+		"mark": "point",
+		"encoding": {
+		  "x": { "field": "day", "type": "nominal", "title": "Day of Week" },
+		  "y": { "field": "distance", "type": "quantitative", "title": "Distance (mi)" },
+		  "color": { "field": "activity", "type": "nominal" }
+		}
 	};
 
-	vegaEmbed('#distanceVis', activityByDaySpec, {actions:false});
-
+	vegaEmbed('#distanceVis', distanceScatterSpec, {actions:false});
 }
 
 
