@@ -47,21 +47,15 @@ class Tweet {
 
     const lower = this.text.toLowerCase();
 
-    //user text comes AFTER the auto message 
 
     if (lower.includes(" - ")) {
         let afterDash = this.text.split(" - ")[1];
-
-        // Clean off URLs
         afterDash = afterDash.split(" http")[0];
-
-        // Clean off hashtags
         afterDash = afterDash.split(" #")[0];
 
         return afterDash.trim();
     }
 
-    //user text comes BEFORE auto message
     const defaultPhrases = ["just completed", "just posted", "achieved", "watch my"];
     for (let phrase of defaultPhrases) {
         const idx = lower.indexOf(phrase);
@@ -70,7 +64,6 @@ class Tweet {
         }
     }
 
-    //fallback (after-text case using @Runkeeper)
     const rkIndex = lower.indexOf("@runkeeper");
     if (rkIndex !== -1) {
         let after = this.text.substring(rkIndex + "@runkeeper".length);
@@ -188,23 +181,25 @@ class Tweet {
 
     getHTMLTableRow(rowNumber:number):string {
     const lower = this.text.toLowerCase();
+
     let link = "";
     const linkStart = lower.indexOf("https://t.co/");
     if (linkStart !== -1) {
-        const afterLink = this.text.substring(linkStart).split(" ")[0];
-        link = afterLink.trim();
+        link = this.text.substring(linkStart).split(" ")[0].trim();
     }
 
-    const safeLink = link || "#";
     const activity = this.activityType || "–";
     const text = this.writtenText || "";
+
+    const tweetDisplay = link
+        ? `${text} <a href="${link}" target="_blank">${link}</a>`
+        : text;
 
     return `
         <tr>
             <td>${rowNumber}</td>
             <td>${activity}</td>
-            <td>${text}</td>
-            <td><a href="${safeLink}" target="_blank">View</a></td>
+            <td>${tweetDisplay}</td>
         </tr>
     `;
 }
