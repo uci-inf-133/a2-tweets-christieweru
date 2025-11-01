@@ -27,4 +27,7 @@ n/a, but I might attend office hours on friday from 4 - 4:50 pm.
 
 5. Is there anything special we need to know in order to run your code?
 
-n/a
+During office hours, I spoke with Weijun about my first graph on the activites page, she told me that my graph should be fine but shes unsure about the grading process. 
+In addition, I didn't hardcode the value that talks about the activites logged per week, i got 6 activites but being one of them is unknown I only logged 5 actual activites. I based
+my graph off of complete_events due to this sentece in the instructions "Note that these values only have to be identified for completed tweets, which follow a fairly rigid format." and the fact that the graph should use distance based tweets.
+I just wanted to clarify why I only have 5 activites, as the directions confused me a bit. Thank you! 

@@ -45,8 +45,17 @@ function parseTweets(runkeeper_tweets) {
 		{activity: "swim", count: swim_count},
 		{activity: "hike", count: hike_count}
 	];
+
+// Count unique activity types from completed tweets
+	const uniqueActivities = new Set(
+		tweet_array
+			.filter(t => t.source === "completed_event")
+			.map(t => t.activityType)
+	);
+	console.log("All detected activities:", uniqueActivities);
+
 	// hardcoded values based on data
-	document.getElementById("numberActivities").innerText = 5;
+	document.getElementById("numberActivities").innerText = uniqueActivities.size;
     document.getElementById("firstMost").innerText = "run";
     document.getElementById("secondMost").innerText = "bike";
     document.getElementById("thirdMost").innerText = "walk";

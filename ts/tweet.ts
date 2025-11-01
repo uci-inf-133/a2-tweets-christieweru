@@ -40,40 +40,40 @@ class Tweet {
     
     // extract only the user-written text from the tweet
     get writtenText():string {
-    //TODO: parse the written text from the tweet
+        //TODO: parse the written text from the tweet
 
-    if (!this.written) {
-        return "";
-    }
-    // handle case where written text comes after auto text
-
-    const lower = this.text.toLowerCase();
-    if (lower.includes(" - ")) {
-        let afterDash = this.text.split(" - ")[1];
-        afterDash = afterDash.split(" http")[0];
-        afterDash = afterDash.split(" #")[0];
-
-        return afterDash.trim();
-    }
-    // handle case where written text comes before default phrase
-
-    const defaultPhrases = ["just completed", "just posted", "achieved", "watch my"];
-    for (let phrase of defaultPhrases) {
-        const idx = lower.indexOf(phrase);
-        if (idx > 0) {
-            return this.text.substring(0, idx).trim();
+        if (!this.written) {
+            return "";
         }
-    }
-    // fallback: after @RunKeeper
-    const rkIndex = lower.indexOf("@runkeeper");
-    if (rkIndex !== -1) {
-        let after = this.text.substring(rkIndex + "@runkeeper".length);
-        after = after.split(" http")[0];
-        after = after.split(" #")[0];
-        return after.trim();
-    }
+        // handle case where written text comes after auto text
 
-    return "";
+        const lower = this.text.toLowerCase();
+        if (lower.includes(" - ")) {
+            let afterDash = this.text.split(" - ")[1];
+            afterDash = afterDash.split(" http")[0];
+            afterDash = afterDash.split(" #")[0];
+
+            return afterDash.trim();
+        }
+        // handle case where written text comes before default phrase
+
+        const defaultPhrases = ["just completed", "just posted", "achieved", "watch my"];
+        for (let phrase of defaultPhrases) {
+            const idx = lower.indexOf(phrase);
+            if (idx > 0) {
+                return this.text.substring(0, idx).trim();
+            }
+        }
+        // fallback after @RunKeeper
+        const rkIndex = lower.indexOf("@runkeeper");
+        if (rkIndex !== -1) {
+            let after = this.text.substring(rkIndex + "@runkeeper".length);
+            after = after.split(" http")[0];
+            after = after.split(" #")[0];
+            return after.trim();
+        }
+
+        return "";
 
 
     }
@@ -161,53 +161,53 @@ class Tweet {
         if(this.source != 'completed_event') {
             return 0;
         }
-        //TODO: prase the distance from the text of the tweet
-    let phrase_array;
-    const lower = this.text.toLowerCase();
-    const kmIndex = lower.indexOf("km");
-    const miIndex = lower.indexOf("mi");
-        if (kmIndex !== -1){
-        const beforeDistance = lower.substring(0, kmIndex).trim();
-        phrase_array = beforeDistance.split(" ");
-        let checkBefore = phrase_array[phrase_array.length -1];
-        let distanceInMi = parseFloat(checkBefore)* 0.621;
-        distanceInMi = parseFloat(distanceInMi.toFixed(2));
-        return distanceInMi;
-    }
-    if (miIndex !== -1){
-        const beforeDistance = lower.substring(0, miIndex).trim();
-        phrase_array = beforeDistance.split(" ");
-        let checkBefore = phrase_array[phrase_array.length -1];
-        return parseFloat(checkBefore);
-    }
-    return 0;
+            //TODO: prase the distance from the text of the tweet
+        let phrase_array;
+        const lower = this.text.toLowerCase();
+        const kmIndex = lower.indexOf("km");
+        const miIndex = lower.indexOf("mi");
+            if (kmIndex !== -1){
+            const beforeDistance = lower.substring(0, kmIndex).trim();
+            phrase_array = beforeDistance.split(" ");
+            let checkBefore = phrase_array[phrase_array.length -1];
+            let distanceInMi = parseFloat(checkBefore)* 0.621;
+            distanceInMi = parseFloat(distanceInMi.toFixed(2));
+            return distanceInMi;
+        }
+        if (miIndex !== -1){
+            const beforeDistance = lower.substring(0, miIndex).trim();
+            phrase_array = beforeDistance.split(" ");
+            let checkBefore = phrase_array[phrase_array.length -1];
+            return parseFloat(checkBefore);
+        }
+        return 0;
     }
     
     // generate a table row for the search results, including link + written text
 
     getHTMLTableRow(rowNumber:number):string {
-    const lower = this.text.toLowerCase();
+        const lower = this.text.toLowerCase();
 
-    let link = "";
-    const linkStart = lower.indexOf("https://t.co/");
-    if (linkStart !== -1) {
-        link = this.text.substring(linkStart).split(" ")[0].trim();
+        let link = "";
+        const linkStart = lower.indexOf("https://t.co/");
+        if (linkStart !== -1) {
+            link = this.text.substring(linkStart).split(" ")[0].trim();
+        }
+
+        const activity = this.activityType || "–";
+        const text = this.writtenText || "";
+
+        const tweetDisplay = link
+            ? `${text} <a href="${link}" target="_blank">${link}</a>`
+            : text;
+
+        return `
+            <tr>
+                <td>${rowNumber}</td>
+                <td>${activity}</td>
+                <td>${tweetDisplay}</td>
+            </tr>
+        `;
     }
-
-    const activity = this.activityType || "–";
-    const text = this.writtenText || "";
-
-    const tweetDisplay = link
-        ? `${text} <a href="${link}" target="_blank">${link}</a>`
-        : text;
-
-    return `
-        <tr>
-            <td>${rowNumber}</td>
-            <td>${activity}</td>
-            <td>${tweetDisplay}</td>
-        </tr>
-    `;
-}
 }
     

@@ -11,6 +11,8 @@ function parseTweets(runkeeper_tweets) {
 	
 	//TODO: Filter to just the written tweets
 	writtenTweets = tweet_array.filter(t=> t.written);
+	document.getElementById("searchCount").textContent = "0";
+	document.getElementById("searchText").textContent = "";
 
 }
 function addEventHandlerForSearch() {
